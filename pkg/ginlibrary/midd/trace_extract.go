@@ -54,16 +54,27 @@ func TraceSpanExtractMiddleware(c *gin.Context) {
 	c.Next()
 }
 
-// TraceSpanFromContext 从 gin context 中获取 trace span
+// TraceSpanFromContext 从 context 中获取 trace span
+// 这里需要封装一下
+//
+// trace.SpanFromContext 使用的是私有key:
+// .   const currentSpanKey traceContextKeyType = iota
+// 在 gin 中只能使用 string 作为 key， 我们自己也创建了一个私有key
+// .   const ginOtelTraceSpan = `ginOpenTelemetrySpan`
+//
+// 为了能避免 key 造成的影响， 因此需要对 gin.Context 做一个判断。
 func TraceSpanFromContext(ctx context.Context) trace.Span {
-	v := ctx.Value(ginOtelTraceSpan)
 
-	span, ok := v.(trace.Span)
-	if !ok {
-		return trace.SpanFromContext(ctx)
+	// 判断是否为 gin.Context
+	if ginctx, ok := ctx.(*gin.Context); ok {
+		v := ginctx.Value(ginOtelTraceSpan)
+		if span, ok := v.(trace.Span); ok {
+			return span
+		}
 	}
 
-	return span
+	// 使用 trace 的原始封装
+	return trace.SpanFromContext(ctx)
 }
 
 // newSpan 根据 TraceID 是否合法， 返回一个新 span

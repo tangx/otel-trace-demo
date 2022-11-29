@@ -4,12 +4,14 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/tangx/otel-demo/pkg/ginlibrary/midd"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func GET(ctx context.Context, ur string) error {
 
-	headers := XXX(ctx)
+	headers := TraceMapCarrier(ctx)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, ur, nil)
 	if err != nil {
@@ -29,7 +31,10 @@ func GET(ctx context.Context, ur string) error {
 	return nil
 }
 
-func XXX(ctx context.Context) propagation.MapCarrier {
+func TraceMapCarrier(ctx context.Context) propagation.MapCarrier {
+	span := midd.TraceSpanFromContext(ctx)
+	ctx = trace.ContextWithSpan(ctx, span)
+
 	pp := propagation.NewCompositeTextMapPropagator(
 		propagation.TraceContext{},
 	)

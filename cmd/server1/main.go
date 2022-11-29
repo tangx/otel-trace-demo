@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tangx/otel-demo/pkg/ginlibrary/midd"
 	"github.com/tangx/otel-demo/pkg/httpclient"
-	"go.opentelemetry.io/otel/trace"
 )
 
 func main() {
@@ -40,8 +39,8 @@ func pingpong(c *gin.Context) {
 		return
 	}
 
-	ctx := trace.ContextWithSpan(c, span)
-	_ = reqServer2(ctx)
+	// ctx := trace.ContextWithSpan(c, span)
+	_ = reqServer2(c)
 
 	c.String(200, string(b))
 }
