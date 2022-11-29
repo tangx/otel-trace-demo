@@ -2,7 +2,7 @@ package midd
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tangx/otel-demo/idgen"
+	"github.com/tangx/otel-demo/pkg/idgen"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/net/context"
