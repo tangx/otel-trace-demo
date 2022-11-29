@@ -1,12 +1,8 @@
 package main
 
 import (
-	"context"
-
 	"github.com/gin-gonic/gin"
 	"github.com/tangx/otel-demo/pkg/ginlibrary/midd"
-	"github.com/tangx/otel-demo/pkg/httpclient"
-	"go.opentelemetry.io/otel/trace"
 )
 
 func main() {
@@ -20,7 +16,7 @@ func main() {
 
 	r.GET("/", pingpong)
 
-	err := r.Run(":8088")
+	err := r.Run(":9099")
 
 	if err != nil {
 		panic(err)
@@ -32,7 +28,7 @@ func pingpong(c *gin.Context) {
 	log := midd.LoggerFromContext(c)
 	span := midd.TraceSpanFromContext(c)
 
-	log.Info("SERVER1", "kk", "vv")
+	log.Info("SERVER2", "kkk", "vvv")
 
 	b, err := span.SpanContext().MarshalJSON()
 	if err != nil {
@@ -40,12 +36,5 @@ func pingpong(c *gin.Context) {
 		return
 	}
 
-	ctx := trace.ContextWithSpan(c, span)
-	_ = reqServer2(ctx)
-
 	c.String(200, string(b))
-}
-
-func reqServer2(ctx context.Context) error {
-	return httpclient.GET(ctx, `http://127.0.0.1:9099/`)
 }
