@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/tangx/otel-demo/pkg/ginlibrary/midd"
+	"github.com/tangx/otel-trace-demo/pkg/ginlibrary/midd"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 )

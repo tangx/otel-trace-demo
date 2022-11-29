@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tangx/otel-demo/pkg/ginlibrary/midd"
-	"github.com/tangx/otel-demo/pkg/httpclient"
+	"github.com/tangx/otel-trace-demo/pkg/ginlibrary/midd"
+	"github.com/tangx/otel-trace-demo/pkg/httpclient"
 )
 
 func main() {

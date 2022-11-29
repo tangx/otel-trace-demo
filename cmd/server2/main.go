@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tangx/otel-demo/pkg/ginlibrary/midd"
+	"github.com/tangx/otel-trace-demo/pkg/ginlibrary/midd"
 )
 
 func main() {

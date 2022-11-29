@@ -1,4 +1,4 @@
-module github.com/tangx/otel-demo
+module github.com/tangx/otel-trace-demo
 
 go 1.19
 
