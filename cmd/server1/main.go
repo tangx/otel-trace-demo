@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tangx/otel-trace-demo/pkg/ginlibrary/midd"
@@ -9,7 +11,17 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	// r := gin.Default()
+	r := gin.New()
+	r.Use(
+		gin.LoggerWithConfig(gin.LoggerConfig{
+			SkipPaths: []string{
+				"/liveness",
+				"/healthy",
+			},
+		}),
+		gin.Recovery(),
+	)
 
 	r.Use(
 		midd.TraceSpanExtractMiddleware,
@@ -18,20 +30,24 @@ func main() {
 	r.Use(midd.TraceSpanInjectMiddleware)
 
 	r.GET("/", pingpong)
+	r.GET("/liveness", livenessCheck)
 
 	err := r.Run(":8088")
 
 	if err != nil {
 		panic(err)
 	}
+}
 
+func livenessCheck(c *gin.Context) {
+	c.String(http.StatusOK, "ok")
 }
 
 func pingpong(c *gin.Context) {
 	log := midd.LoggerFromContext(c)
 	span := midd.TraceSpanFromContext(c)
 
-	log.Info("SERVER1", "kk", "vv")
+	log.Info(config.AppName, "kk", "vv")
 
 	b, err := span.SpanContext().MarshalJSON()
 	if err != nil {
@@ -46,5 +62,10 @@ func pingpong(c *gin.Context) {
 }
 
 func reqServer2(ctx context.Context) error {
-	return httpclient.GET(ctx, `http://127.0.0.1:9099/`)
+
+	if config.NextServer == "" {
+		return errors.New("NO MORE next server")
+	}
+
+	return httpclient.GET(ctx, config.NextServer)
 }
