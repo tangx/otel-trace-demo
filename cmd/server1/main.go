@@ -32,7 +32,7 @@ func main() {
 	r.GET("/", pingpong)
 	r.GET("/liveness", livenessCheck)
 
-	err := r.Run(":8088")
+	err := r.Run(":80")
 
 	if err != nil {
 		panic(err)
