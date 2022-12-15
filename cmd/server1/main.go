@@ -56,7 +56,11 @@ func pingpong(c *gin.Context) {
 	}
 
 	// ctx := trace.ContextWithSpan(c, span)
-	_ = reqServer2(c)
+	err = reqServer2(c)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	c.String(200, string(b))
 }
